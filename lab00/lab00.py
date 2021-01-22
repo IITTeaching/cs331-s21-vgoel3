@@ -1,6 +1,6 @@
 # Change this function
 def my_palindrome():
-    return 'mom'
+    return 'racecar'
 
 # Do not change the main method
 def main():
