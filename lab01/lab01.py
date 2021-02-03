@@ -22,7 +22,11 @@ def captured_output():
 
 # implement this function
 def is_perfect(n):
-    pass
+    divs = [i for i in range(1,n) if n % i == 0]
+    sum = 0
+    for i in divs:
+        sum += i
+    return sum == n
 
 # (3 points)
 def test1():
@@ -40,7 +44,11 @@ def test1():
 
 # implement this function
 def multiples_of_3_and_5(n):
-    pass
+    mults = [i for i in range(1,n) if i % 3 == 0 or i % 5 == 0]
+    sum = 0
+    for i in mults:
+        sum += i
+    return sum
 
 # (3 points)
 def test2():
@@ -53,7 +61,32 @@ def test2():
 # EXERCISE 3
 #################################################################################
 def integer_right_triangles(p):
-    pass
+    hyp = p // 2 + p % 2 - 1
+    leg_total = p - hyp
+    leg_a = hyp
+    leg_b = leg_total - leg_a
+    good_trips = [] # to be filled with all trips of perim 'p' that create a right triangle
+    while True:
+        if hyp ** 2 == leg_a ** 2 + leg_b ** 2:
+            good_trips.append([hyp, leg_a, leg_b])
+        if leg_b >= hyp:
+            break
+        elif leg_b >= leg_a:
+            leg_total += 1
+            hyp -= 1
+            leg_a = hyp
+            leg_b = leg_total - leg_a
+        else:
+            leg_a -= 1
+            leg_b += 1
+    dupe = 0
+    for i in good_trips:
+        xcl = [j for j in good_trips if good_trips.index(j) != good_trips.index(i)]
+        for k in xcl:
+            if k[2] == i[1]:
+                dupe += 1
+    return len(good_trips) - dupe // 2
+
 
 def test3():
     tc = unittest.TestCase()
@@ -67,7 +100,13 @@ def test3():
 
 # implement this function
 def gen_pattern(chars):
-    pass
+    str_list = ['' for i in range(2*len(chars)-1)]
+    for i in range(len(chars)):
+        sub = chars[:-i-1:-1]+chars[-i-1:]
+        sub = '.'.join(sub)
+        str_list[i] = sub.center(4*len(chars)-3, '.') + '\n'
+        str_list[-i-1] = sub.center(4*len(chars)-3, '.') + '\n'
+    print(''.join(str_list))
 
 def test4():
     tc = unittest.TestCase()
