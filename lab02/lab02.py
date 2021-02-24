@@ -137,7 +137,6 @@ def test2():
 def main():
     test1()
     test2()
-    print("helolo")
 
 if __name__ == '__main__':
     main()
