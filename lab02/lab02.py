@@ -105,24 +105,19 @@ def test1_2():
 ################################################################################
 # Implement this function
 def gen_passage(ngram_dict, length=100):
-    build_passage = ''
-    survive = True
-    active_key = random.choice(list(ngram_dict.keys()))
-    build_passage += active_key + ' '
-    while survive:
-        if active_key not in ngram_dict:
-            active_key = random.choice(list(ngram_dict.keys()))
-            build_passage += active_key + " "
+    build_passage = []
+    active_key = random.choice(sorted(ngram_dict.keys()))
+    build_passage.append(active_key)  
+    while len(build_passage) <= length:
+        if active_key not in ngram_dict.keys():
+            active_key = random.choice(sorted(ngram_dict.keys()))
+            build_passage.append(active_key) 
         tup = random.choice(ngram_dict[active_key])
-        for i in range(len(tup)):
-            build_passage += tup[i]
-            if len([tok for tok in build_passage.split()]) == length:
-                survive = False
-                break
-            else:
-                build_passage += ' '
+        for i in tup:
+            build_passage.append(i)
         active_key = tup[-1]
-    return build_passage    
+    str_build_passage = ' '.join(build_passage[:length])
+    return str_build_passage    
             
 
 # 50 Points
