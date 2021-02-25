@@ -36,12 +36,13 @@ def mybinsearch(lst: List[T], elem: S, compare: Callable[[T, S], int]) -> int:
     exist in lst, then return -1.
     """
     bottom = 0
-    top = len(lst)
+    top = len(lst) - 1
     index = -1
-    while(bottom != top):
+    while(bottom <= top):
         mid = (bottom + top) // 2
         if compare(lst[mid],elem) == 0:
             index = mid
+            break
         elif compare(lst[mid],elem) == 1:
             top = mid - 1
         else:
@@ -145,7 +146,7 @@ class PrefixSearcher():
 
 
     def search(self, q):
-        sub_comp_function = lambda x,y:  0 if x == y else (-1 if x < y else 1)
+        sub_comp_function = lambda x,y:  0 if x[:len(y)] == y else (-1 if x < y else 1)
         """
         Return true if the document contains search string q (of
 
@@ -157,13 +158,14 @@ class PrefixSearcher():
             raise Exception("q is longer than longest substring")
         else:
             bottom = 0
-            top = len(self.subs)
+            top = len(self.subs) - 1
             index = -1
-            while(bottom != top):
+            while(bottom <= top):
                 mid = (bottom + top) // 2
-                if sub_comp_function((self.subs[mid],q) == 0:
+                if sub_comp_function(self.subs[mid],q) == 0:
                     index = mid
-                elif sub_comp_function((self.subs[mid],q) == 1:
+                    break
+                elif sub_comp_function(self.subs[mid],q) == 1:
                     top = mid - 1
                 else:
                     bottom = mid + 1
@@ -211,30 +213,28 @@ class SuffixArray():
         """
         Creates a suffix array for document (a string).
         """
-        compare_function = lambda x,y:  0 if x == y else (-1 if x < y else 1)
+        compare_function = lambda x,y:  0 if document[x:] == document[y:] else (-1 if document[x:] < document[y:] else 1)
         self.document = document
-        self.sufs = [document[i:] for i in range(len(document))]
-        self.sufs = mysort(self.sufs, compare_function)
-        self.sufs_array = [len(document)-len(self.sufs[i]) for i in range(len(document))]
+        self.sufs_array = mysort([i for i in range(len(document))], compare_function)
 
 
     def positions(self, searchstr: str):
         """
         Returns all the positions of searchstr in the documented indexed by the suffix array.
         """
+        compare_function = lambda x,y:  0 if self.document[x:x+len(y)] == y else -1
         positions = []
-        for i in range(len(self.sufs_array)):
-            if self.sufs[self.sufs_array[i]:] == searchstr:
+        for i in self.sufs_array:
+            if compare_function(i, searchstr) == 0:
+                print("string1: ", self.document[i:i+len(searchstr)], " and string2: ", searchstr)
                 positions.append(i)
         return positions
-
     def contains(self, searchstr: str):
-        suf_comp_function = lambda x,y:  0 if x == y else (-1 if x < y else 1)
-        
+        suf_comp_function = lambda x,y:  0 if self.document[x:x+len(y)] == y else (-1 if self.document[x:x+len(y)] < y else 1)
         """
         Returns true of searchstr is coontained in document.
         """
-        return mybinsearch(self.sufs, searchstr, suf_comp_function) != -1
+        return mybinsearch(self.sufs_array, searchstr, suf_comp_function) != -1
 
 # 40 Points
 def test3():
