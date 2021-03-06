@@ -226,7 +226,6 @@ class SuffixArray():
         positions = []
         for i in self.sufs_array:
             if compare_function(i, searchstr) == 0:
-                print("string1: ", self.document[i:i+len(searchstr)], " and string2: ", searchstr)
                 positions.append(i)
         return positions
     def contains(self, searchstr: str):
