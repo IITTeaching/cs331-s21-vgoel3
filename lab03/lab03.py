@@ -216,31 +216,38 @@ class SuffixArray():
         compare_function = lambda x,y:  0 if document[x:] == document[y:] else (-1 if document[x:] < document[y:] else 1)
         self.document = document
         self.sufs_array = mysort([i for i in range(len(document))], compare_function)
+        # copy = [self.document[i:i+10] for i in self.sufs_array[355:357]]
+        # print(copy)
 
-
-    def positions(self, searchstr: str):
-        """
-        Returns all the positions of searchstr in the documented indexed by the suffix array.
-        """
-        compare_function = lambda x,y:  0 if self.document[x:x+len(y)] == y else -1
-        positions = []
-        for i in self.sufs_array:
-            if compare_function(i, searchstr) == 0:
-                positions.append(i)
-        return positions
     def contains(self, searchstr: str):
         suf_comp_function = lambda x,y:  0 if self.document[x:x+len(y)] == y else (-1 if self.document[x:x+len(y)] < y else 1)
         """
         Returns true of searchstr is coontained in document.
         """
+        # print(mybinsearch(self.sufs_array, 'Moby', suf_comp_function))
         return mybinsearch(self.sufs_array, searchstr, suf_comp_function) != -1
 
+    def positions(self, searchstr: str):
+        """
+        Returns all the positions of searchstr in the documented indexed by the suffix array.
+        """
+        compare_function = lambda x,y:  0 if self.document[x:x+len(y)] == y else (-1 if self.document[x:x+len(y)] < y else 1)
+        positions = []
+        index = mybinsearch(self.sufs_array, searchstr, compare_function)
+        while compare_function(self.sufs_array[index], searchstr) == 0:
+            index -= 1
+        index += 1
+        while compare_function(self.sufs_array[index], searchstr) == 0:
+            positions.append(index)
+            index += 1
+        return positions
 # 40 Points
 def test3():
     """Test suffix arrays."""
     print(80 * "#" + "\nTest suffix arrays.")
     test3_1()
     test3_2()
+    
 
 
 # 20 Points
@@ -263,9 +270,9 @@ def test3_2():
     md_url = 'https://www.gutenberg.org/files/2701/2701-0.txt'
     md_text = urllib.request.urlopen(md_url).read().decode()
     s = SuffixArray(md_text[0:1000])
-    tc.assertTrue(s.contains("Moby Dick"))
     tc.assertTrue(s.contains("Herman Melville"))
-    tc.assertEqual(s.positions("Moby Dick"), [427])
+    tc.assertTrue(s.contains("Moby-Dick"))
+    tc.assertEqual(s.positions("Moby-Dick"), [355, 356])
 
 
 #################################################################################
