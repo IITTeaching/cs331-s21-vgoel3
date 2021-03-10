@@ -234,6 +234,7 @@ class SuffixArray():
         compare_function = lambda x,y:  0 if self.document[x:x+len(y)] == y else (-1 if self.document[x:x+len(y)] < y else 1)
         positions = []
         index = mybinsearch(self.sufs_array, searchstr, compare_function)
+        index -= 1
         while compare_function(self.sufs_array[index], searchstr) == 0:
             index -= 1
         index += 1
