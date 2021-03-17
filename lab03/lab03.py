@@ -271,9 +271,16 @@ def test3_2():
     md_url = 'https://www.gutenberg.org/files/2701/2701-0.txt'
     md_text = urllib.request.urlopen(md_url).read().decode()
     s = SuffixArray(md_text[0:1000])
+<<<<<<< HEAD
     tc.assertTrue(s.contains("Herman Melville"))
     tc.assertTrue(s.contains("Moby-Dick"))
     tc.assertEqual(s.positions("Moby-Dick"), [355, 356])
+=======
+    tc.assertTrue(s.contains("Moby-Dick"))
+    tc.assertTrue(s.contains("Herman Melville"))
+    posset = set(s.positions("Moby-Dick"))
+    tc.assertEqual(posset, {355, 356})
+>>>>>>> 510e22a975f6dab2cb5e6d567c1e36a37e3e9033
 
 
 #################################################################################
