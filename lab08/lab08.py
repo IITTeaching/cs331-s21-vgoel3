@@ -21,13 +21,45 @@ class Heap:
     @staticmethod
     def _right(idx):
         return idx*2+2
-
+        
+    def _has_left(self, idx):
+        return self._left(idx) < len(self.data)
+    
+    def _has_right(self, idx):
+        return self._right(idx) < len(self.data)
+    
+    def _has_parent(self, idx):
+        return self._parent(idx) > -1
+    
+    def _left_child_value(self, idx):
+        return self.data[self._left(idx)]
+    
+    def _right_child_value(self, idx):
+        return self.data[self._right(idx)]
+    
+    def _parent_value(self, idx):
+        return self.data[self._parent(idx)]
+    
     def heapify(self, idx=0):
         ### BEGIN SOLUTION
+        while self._has_left(idx):
+            bigger_child_idx = self._left(idx)
+            if self._has_right(idx) and self.key(self.data[self._right(idx)]) > self.key(self.data[self._left(idx)]):
+                bigger_child_idx = self._right(idx)
+            if self.key(self.data[idx]) > self.key(self.data[bigger_child_idx]):
+                break
+            else:
+                self.data[idx], self.data[bigger_child_idx] = self.data[bigger_child_idx], self.data[idx]
+            idx = bigger_child_idx
         ### END SOLUTION
 
     def add(self, x):
         ### BEGIN SOLUTION
+        self.data.append(x)
+        index = len(self.data) - 1
+        while self._has_parent(index) and self.key(self._parent_value(index)) < self.key(x):
+            self.data[index], self.data[self._parent(index)] = self.data[self._parent(index)], self.data[index]
+            index = self._parent(index)  
         ### END SOLUTION
 
     def peek(self):
@@ -130,6 +162,38 @@ def test_key_heap_5():
 ################################################################################
 def running_medians(iterable):
     ### BEGIN SOLUTION
+    low_heap = Heap()
+    high_heap = Heap(key=lambda x: -x)
+    low_heap.add(float('-inf'))
+    high_heap.add(float('inf'))
+    meds = []
+    for i in iterable:
+
+        if i < low_heap.peek():
+            low_heap.add(i)
+        elif i > high_heap.peek():
+            high_heap.add(i)
+        else:
+            if len(low_heap) == len(high_heap):
+                low_heap.add(i)
+            elif len(low_heap) > len(high_heap):
+                high_heap.add(i)
+            else:
+                low_heap.add(i)
+        
+        if len(low_heap) - len(high_heap) == 2:
+            high_heap.add(low_heap.pop())
+        elif len(low_heap) - len(high_heap) == -2:
+            low_heap.add(high_heap.pop())
+    
+        if len(low_heap) > len(high_heap):
+            meds.append(low_heap.peek())
+        elif len(low_heap) < len(high_heap):
+            meds.append(high_heap.peek())
+        else:
+            meds.append((low_heap.peek()+high_heap.peek())/2)
+    
+    return meds
     ### END SOLUTION
 
 ################################################################################
@@ -174,6 +238,17 @@ def test_median_3():
 ################################################################################
 def topk(items, k, keyf):
     ### BEGIN SOLUTION
+    top_heap = Heap(lambda x: -keyf(x))
+
+    for i in items:
+        if len(top_heap) != k:
+            top_heap.add(i)
+        else:
+            if keyf(i) > keyf(top_heap.peek()):
+                top_heap.pop()
+                top_heap.add(i)
+    return [i for i in top_heap][::-1]
+    
     ### END SOLUTION
 
 ################################################################################
