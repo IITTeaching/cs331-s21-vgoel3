@@ -224,8 +224,8 @@ class HBStree:
             elems = []
             version_root = self.root_versions[-1 - timetravel]
             self.version_iter_helper(version_root, elems)
-            for i in elems:
-                yield i
+            for k in elems:
+                yield k
         else:
             yield None
     def version_iter_helper(self, root, elems):
