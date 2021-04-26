@@ -51,14 +51,39 @@ class HBStree:
         KeyError, if key does not exist.
         """
         # BEGIN SOLUTION
+        if self.__contains__(key):
+            root = self.get_current_root()
+            return self.getitem_helper(key, root)
+        raise KeyError
         # END SOLUTION
 
+    def getitem_helper(self, key, root):
+        if root.val == key:
+            return key
+        elif key > root.val:
+            return self.getitem_helper(key, root.right)
+        else:
+            return self.getitem_helper(key, root.left)
     def __contains__(self, el):
         """
         Return True if el exists in the current version of the tree.
         """
         # BEGIN SOLUTION
+        if self.get_current_root():
+            root = self.get_current_root()
+            return self.contains_helper(el, root)
+        return False
         # END SOLUTION
+
+    def contains_helper(self, key, root):
+        if root.val == key:
+            return True
+        if (root.left == None and key < root.val) or (root.right == None and key > root.val):
+            return False
+        elif key > root.val:
+            return self.contains_helper(key, root.right)
+        else:
+            return self.contains_helper(key, root.left)
 
     def insert(self,key):
         """
@@ -67,11 +92,61 @@ class HBStree:
         from creating a new version.
         """
         # BEGIN SOLUTION
+        if not self.__contains__(key):
+            if not self.get_current_root():
+                self.root_versions.append(HBStree.INode(key, None, None))
+            else:
+                root = self.get_current_root()
+                self.root_versions.append(self.insert_helper(key,root))
+    
+    def insert_helper(self, key, root):
+        if root.left == None and key < root.val:
+            return HBStree.INode(root.val, HBStree.INode(key, None, None), root.right)
+        elif root.right == None and key > root.val:
+            return HBStree.INode(root.val, root.left, HBStree.INode(key, None, None))
+        elif key < root.val:
+            left = self.insert_helper(key, root.left)
+            root = HBStree.INode(root.val, left, root.right)
+        elif key > root.val:
+            right = self.insert_helper(key, root.right)
+            root = HBStree.INode(root.val, root.left, right)
+        return root
         # END SOLUTION
 
     def delete(self,key):
         """Delete key from the tree, creating a new version of the tree. If key does not exist in the current version of the tree, then do nothing and refrain from creating a new version."""
         # BEGIN SOLUTION
+        if self.__contains__(key):
+            self.root_versions.append(self.delete_helper(key, self.get_current_root()))
+            
+    def delete_helper(self, key, root):
+        if key < root.val:
+            left = self.delete_helper(key, root.left)
+            root = HBStree.INode(root.val, left, root.right)
+        elif key > root.val:
+            right = self.delete_helper(key, root.right)
+            root = HBStree.INode(root.val, root.left, right)
+        else:
+            root = self.replace(root)
+        return root
+
+    def replace(self, root):
+        if not root.left:
+            return root.right
+        elif not root.right:
+            return root.left    
+        else:
+            data = self.find_max(root.left)
+            root = HBStree.INode(data[0], data[1], root.right)
+            return root
+
+    def find_max(self, root):
+        if not root.right.right:
+            return [root.right.val, HBStree.INode(root.val, root.left, None)]
+        else:
+            value, right = self.find_max(root.right)[0], self.find_max(root.right)[1]
+            root = HBStree.INode(root.val, root.left, right)
+            return [value, root]
         # END SOLUTION
 
     @staticmethod
@@ -143,8 +218,21 @@ class HBStree:
         if timetravel < 0 or timetravel >= len(self.root_versions):
             raise IndexError(f"valid versions for time travel are 0 to {len(self.root_versions) -1}, but was {timetravel}")
         # BEGIN SOLUTION
+        if self.root_versions[-1 - timetravel]:
+            elems = []
+            version_root = self.root_versions[-1 - timetravel]
+            self.version_iter_helper(version_root, elems)
+            for i in elems:
+                yield i
+        else:
+            yield None
+    def version_iter_helper(self, root, elems):
+        if root.left:
+            self.version_iter_helper(root.left, elems)
+        elems.append(root.val)
+        if root.right:
+            self.version_iter_helper(root.right, elems)
         # END SOLUTION
-
     @staticmethod
     def stringify_subtree(root):
         """
