@@ -15,6 +15,9 @@ class AVLTree:
 
         def rotate_left(self):
             ### BEGIN SOLUTION
+            n = self.right
+            self.val, n.val = n.val, self.val
+            self.right, n.right, self.left, n.left = n.right, n.left, n, self.left
             ### END SOLUTION
 
         @staticmethod
@@ -29,18 +32,116 @@ class AVLTree:
         self.root = None
 
     @staticmethod
-    def rebalance(t):
+    def rebalance(n):
         ### BEGIN SOLUTION
+        pass
         ### END SOLUTION
 
     def add(self, val):
         assert(val not in self)
         ### BEGIN SOLUTION
+        if self.root:
+            self.root = self.add_helper(val, self.root)
+        else:
+            self.root = AVLTree.Node(val)
+        self.size += 1
+
+    def add_helper(self, key, root):
+        if (not root.left) and (key < root.val):
+            root = AVLTree.Node(root.val, AVLTree.Node(key), None)
+            return root
+        elif (not root.right) and key > (root.val):
+            root = AVLTree.Node(root.val, None, AVLTree.Node(key))
+            return root
+        elif key < root.val:
+            root = AVLTree.Node(root.val, self.add_helper(key, root.left), None)
+            if AVLTree.Node.height(root.left) - AVLTree.Node.height(root.right) == 2:
+                if root.left.right:
+                    root.left.rotate_left()
+                    root.rotate_right()
+                else:
+                    root.rotate_right()
+            return root
+        elif key > root.val:
+            root = AVLTree.Node(root.val, None, self.add_helper(key, root.right))
+            if AVLTree.Node.height(root.right) - AVLTree.Node.height(root.left) == 2:
+                if root.right.left:
+                    root.right.rotate_right()
+                    root.rotate_left()
+                else:
+                    root.rotate_left()
+            return root
         ### END SOLUTION
 
     def __delitem__(self, val):
         assert(val in self)
         ### BEGIN SOLUTION
+        self.root = self.delete_helper(val, self.root)
+
+    def delete_helper(self, key, root):
+        if key < root.val:
+            left = self.delete_helper(key, root.left)
+            root = AVLTree.Node(root.val, left, root.right)
+        elif key > root.val:
+            right = self.delete_helper(key, root.right)
+            root = AVLTree.Node(root.val, root.left, right)
+        else:
+            root = self.replace(root)
+            if AVLTree.Node.height(root.left) - AVLTree.Node.height(root.right) == 2:
+                if root.left.right:
+                    root.left.rotate_left()
+                    root.rotate_right()
+                else:
+                    root.rotate_right()
+            elif AVLTree.Node.height(root.right) - AVLTree.Node.height(root.left) == 2:
+                if root.right.left:
+                    root.right.rotate_right()
+                    root.rotate_left()
+                else:
+                    root.rotate_left()
+            return root
+
+    def replace(self, root):
+        if not root.left:
+            return root.right
+        elif not root.right:
+            return root.left    
+        else:
+            data = self.find_max(root.left)
+            root = AVLTree.Node(data[0], data[1], root.right)
+            if AVLTree.Node.height(root.left) - AVLTree.Node.height(root.right) == 2:
+                if root.left.right:
+                    root.left.rotate_left()
+                    root.rotate_right()
+                else:
+                    root.rotate_right()
+            elif AVLTree.Node.height(root.right) - AVLTree.Node.height(root.left) == 2:
+                if root.right.left:
+                    root.right.rotate_right()
+                    root.rotate_left()
+                else:
+                    root.rotate_left()
+            return root
+
+    def find_max(self, root):
+        if not root.right.right:
+            return [root.right.val, AVLTree.Node(root.val, root.left, None)]
+        else:
+            data = self.find_max(root.right)
+            root = AVLTree.Node(root.val, root.left, data[1])
+            if AVLTree.Node.height(root.left) - AVLTree.Node.height(root.right) == 2:
+                if root.left.right:
+                    root.left.rotate_left()
+                    root.rotate_right()
+                else:
+                    root.rotate_right()
+            elif AVLTree.Node.height(root.right) - AVLTree.Node.height(root.left) == 2:
+                if root.right.left:
+                    root.right.rotate_right()
+                    root.rotate_left()
+                else:
+                    root.rotate_left()
+            return [data[0], root]
         ### END SOLUTION
 
     def __contains__(self, val):
@@ -121,7 +222,7 @@ def test_ll_fix_simple():
 
     for x in [3, 2, 1]:
         t.add(x)
-
+    t.pprint() # FOR DEBUG PURPOSES
     tc.assertEqual(height(t.root), 2)
     tc.assertEqual([t.root.left.val, t.root.val, t.root.right.val], [1, 2, 3])
 
