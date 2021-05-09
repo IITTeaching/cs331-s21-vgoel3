@@ -10,59 +10,82 @@
       <li><b>test_ll_fix_simple</b>
       <ul>
       <li>Grade Percentage: 10</li>
-      <li>Your solution succeeded taking 0.097 sec</Li>
+      <li>Your solution succeeded taking 0.091 sec</Li>
       </ul>
       </li>
       <li><b>test_rr_fix_simple</b>
       <ul>
       <li>Grade Percentage: 10</li>
-      <li>Your solution succeeded taking 0.093 sec</Li>
+      <li>Your solution succeeded taking 0.091 sec</Li>
       </ul>
       </li>
       <li><b>test_lr_fix_simple</b>
       <ul>
       <li>Grade Percentage: 10</li>
-      <li>Your solution succeeded taking 0.076 sec</Li>
+      <li>Your solution succeeded taking 0.085 sec</Li>
       </ul>
       </li>
       <li><b>test_rl_fix_simple</b>
       <ul>
       <li>Grade Percentage: 10</li>
-      <li>Your solution succeeded taking 0.089 sec</Li>
+      <li>Your solution succeeded taking 0.087 sec</Li>
       </ul>
       </li>
       <li><b>test_key_order_after_ops</b>
       <ul>
       <li>Grade Percentage: 30</li>
-      <li>Your solution failed this test case! taking 0.090 sec</Li>
-<li><pre>AssertionError: </pre></li>
+      <li>Your solution failed this test case! taking 0.137 sec</Li>
+<li><pre>RecursionError: maximum recursion depth exceeded</pre></li>
 <li><pre>Traceback (most recent call last):
   File "/Users/lord_pretzel/.pyenv/versions/3.9.0/lib/python3.9/site-packages/grader-0.0.1-py3.9.egg/grader/execution_base.py", line 60, in call_test_function
     test_function(
   File "/Users/lord_pretzel/.pyenv/versions/3.9.0/lib/python3.9/site-packages/grader-0.0.1-py3.9.egg/grader/core.py", line 48, in wrapper
     result = test_function(module, *args, **kwargs)
-  File "/var/folders/f7/xnz8v_b13td37s3k4w8t5j2h0000gn/T/tmpm_hvt6nu/lab10-test.py", line 90, in test_key_order_after_ops
+  File "/var/folders/f7/xnz8v_b13td37s3k4w8t5j2h0000gn/T/tmpdnp5uqyd/lab10-test.py", line 90, in test_key_order_after_ops
     del t[to_rem]
-  File "<tested-program>", line 77, in __delitem__
-AssertionError
+  File "<tested-program>", line 105, in __delitem__
+  File "<tested-program>", line 120, in del_helper
+  File "<tested-program>", line 120, in del_helper
+  File "<tested-program>", line 120, in del_helper
+  File "<tested-program>", line 122, in del_helper
+  File "<tested-program>", line 122, in del_helper
+  File "<tested-program>", line 120, in del_helper
+  File "<tested-program>", line 114, in del_helper
+  File "<tested-program>", line 43, in rebalance
+  File "<tested-program>", line 36, in balance_factor
+  File "<tested-program>", line 28, in height
+  File "<tested-program>", line 28, in height
+  File "<tested-program>", line 28, in height
+  [Previous line repeated 983 more times]
+RecursionError: maximum recursion depth exceeded
 </pre></li>
       </ul>
       </li>
       <li><b>test_stress_testing</b>
       <ul>
       <li>Grade Percentage: 30</li>
-      <li>Your solution failed this test case! taking 0.098 sec</Li>
-<li><pre>AssertionError: Element added not in tree</pre></li>
+      <li>Your solution failed this test case! taking 3.565 sec</Li>
+<li><pre>RecursionError: maximum recursion depth exceeded</pre></li>
 <li><pre>Traceback (most recent call last):
   File "/Users/lord_pretzel/.pyenv/versions/3.9.0/lib/python3.9/site-packages/grader-0.0.1-py3.9.egg/grader/execution_base.py", line 60, in call_test_function
     test_function(
   File "/Users/lord_pretzel/.pyenv/versions/3.9.0/lib/python3.9/site-packages/grader-0.0.1-py3.9.egg/grader/core.py", line 48, in wrapper
     result = test_function(module, *args, **kwargs)
-  File "/var/folders/f7/xnz8v_b13td37s3k4w8t5j2h0000gn/T/tmp1hqdidxe/lab10-test.py", line 113, in test_stress_testing
-    assertIn(x, t, 'Element added not in tree')
-  File "/Users/lord_pretzel/.pyenv/versions/3.9.0/lib/python3.9/site-packages/grader-0.0.1-py3.9.egg/grader/assertions.py", line 63, in assertIn
-    raise AssertionError(message)
-AssertionError: Element added not in tree
+  File "/var/folders/f7/xnz8v_b13td37s3k4w8t5j2h0000gn/T/tmpxw23ufva/lab10-test.py", line 118, in test_stress_testing
+    del t[vals[i]]
+  File "<tested-program>", line 105, in __delitem__
+  File "<tested-program>", line 122, in del_helper
+  File "<tested-program>", line 122, in del_helper
+  File "<tested-program>", line 122, in del_helper
+  [Previous line repeated 2 more times]
+  File "<tested-program>", line 114, in del_helper
+  File "<tested-program>", line 43, in rebalance
+  File "<tested-program>", line 36, in balance_factor
+  File "<tested-program>", line 28, in height
+  File "<tested-program>", line 28, in height
+  File "<tested-program>", line 28, in height
+  [Previous line repeated 984 more times]
+RecursionError: maximum recursion depth exceeded
 </pre></li>
       </ul>
       </li>
