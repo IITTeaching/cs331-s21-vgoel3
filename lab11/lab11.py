@@ -6,10 +6,14 @@ def quicksort(lst,pivot_fn):
 
 def qsort(lst,low,high,pivot_fn):
     ### BEGIN SOLUTION
+    if high - low == 1 or high - low = 0:
+        return lst
+    else:
     ### END SOLUTION
 
 def pivot_first(lst,low,high):
     ### BEGIN SOLUTION
+
     ### END SOLUTION
 
 def pivot_random(lst,low,high):
