@@ -35,8 +35,8 @@ def radix_a_book(book_url='https://www.gutenberg.org/files/84/84-0.txt'):
     # LSD ITERATION - RADIX SORT LOOP
     for i in range(-1, max_len -1, -1):
         byte_lst = count_sort(byte_lst, i)
-
     return byte_lst
+
 def count_sort(arr, idx):
     # The output character array that will have sorted arr
     output = [0 for i in range(len(arr))]
@@ -78,10 +78,16 @@ def count_sort(arr, idx):
         ans[i] = output[i]
     return ans
 
+def test_book(link='https://www.gutenberg.org/files/84/84-0.txt'):
+    r_sort_lst = radix_a_book(link)
+    print(r_sort_lst[:20], r_sort_lst[1000:1020], r_sort_lst[10000:10020], r_sort_lst[70000:70020], r_sort_lst[-20:], sep='\n')    
+
 def main():
     
-    r_sort_lst = radix_a_book()
-    print(r_sort_lst[:20], r_sort_lst[1000:1020], r_sort_lst[10000:10020], r_sort_lst[40000:40020], r_sort_lst[-20:], sep='\n')
+    test_book() # frankenstein
+    test_book('https://www.gutenberg.org/files/2701/2701-0.txt') # moby dick
+    test_book('https://www.gutenberg.org/files/4300/4300-0.txt') # ulysses (last words are pretty funny)
+    test_book('https://www.gutenberg.org/files/345/345-0.txt') # dracula
 
     ## \/\/\/ SMALL TEST CASE OF RADIX-SORT VIA LOOPING OF COUNT_SORT() \/\/\/
     
