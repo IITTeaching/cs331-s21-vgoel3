@@ -8,24 +8,11 @@ def book_to_words(book_url='https://www.gutenberg.org/files/84/84-0.txt'):
     return bookascii.split()
 
 def radix_a_book(book_url='https://www.gutenberg.org/files/84/84-0.txt'):
+
     byte_lst = book_to_words(book_url)
-    ### \/\/\/ USEFUL TO ME FOR UNDERSTANDING WHAT EXACTLY IS GOING ON WITH CHAR-VALS \/\/\/ 
-    # 
-    # byte_words = byte_lst[49:99]
-    # ascii_vals = [[]]
-    # for i in byte_words:
-    #     for j in range(len(i)):
-    #         ascii_vals[-1].append(i[j])
-    #     ascii_vals.append([])
-    # for i in range(len(byte_words)):
-    #     print('{}, {}'.format(byte_words[i], ascii_vals[i]))
-    # 
-    ### /\/\/\ USEFUL TO ME FOR UNDERSTANDING WHAT EXACTLY IS GOING ON WITH CHAR-VALS /\/\/\ 
     
     # finding highest length of word in byte_lst to determine how far the sort must iterate
     # to ensure a complete sort
-    
-
     max_len = 0
     for i in byte_lst:
         if max_len < len(i):
@@ -69,32 +56,20 @@ def count_sort(arr, curr_i, max_idx):
         else:
             output[count[0] - 1] = arr[i]
             count[0] -= 1            
-    
+
     return output
 
 def test_book(link='https://www.gutenberg.org/files/84/84-0.txt', title = 'FRANKENSTEIN'):
     tc = TestCase()
+
     print(80 * '#', 'BEGIN SORTING *{}*'.format(title), 80 * '#', sep='\n')
     print()
-    copy_lst = book_to_words(link)
 
-    ### lines of code which could be used to help compare the runtimes of PythonSort and RadixSort (noted with <<<<)
-    # py_start = time.time() <<<<
-    copy_lst = sorted(copy_lst)
-    # py_end = time.time()   <<<<
-    
-    ### RadixSort runtime <<<<
-    # start = time.time() <<<<
+    copy_lst = sorted(book_to_words(link))
     r_sort_lst = radix_a_book(link)
-    # end = time.time() <<<<
-
-    ### random sampling of the sorted list - enables rough visual checking of a correct sort
-    # print(r_sort_lst[:20], r_sort_lst[1000:1020], r_sort_lst[10000:10020], r_sort_lst[70000:70020], r_sort_lst[-20:], sep='\n\n')    
     
-    # success report and statistics
     tc.assertEqual(r_sort_lst, copy_lst)
-    # print('RadixSort runtime: {} seconds.'.format(end - start))
-    # print('PythonSort runtime: {} seconds.'.format(py_end - py_start))
+
     print(80 * '#', 'END SORTING *{}*: CORRECTLY SORTED'.format(title), 80 * '#', '\n\n', sep='\n')
 
 def main():
@@ -104,11 +79,8 @@ def main():
     test_book('https://www.gutenberg.org/files/345/345-0.txt', 'DRACULA') # dracula
     test_book('https://www.gutenberg.org/files/4300/4300-0.txt', 'ULYSSES') # ulysses 
 
-    ### \/\/\/ SMALL TEST CASE OF RADIX-SORT VIA LOOPING OF COUNT_SORT() \/\/\/
-    # test_list_1 = [b'Act', b'Bear', b'Cat', b'125', b'Dog', b'it', b'the']
-    # for i in range(0, len('bear')):
-    #     test_list_1 = count_sort(test_list_1, i, len('bear') - 1)
-    #     print(test_list_1) 
+
+    print('ALL BOOKS CORRECTLY SORTED')
 
 
 main()
