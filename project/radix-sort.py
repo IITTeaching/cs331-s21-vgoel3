@@ -1,4 +1,3 @@
-import time
 from unittest import TestCase   
 import urllib.request
 
@@ -78,7 +77,6 @@ def main():
     test_book('https://www.gutenberg.org/files/2701/2701-0.txt', 'MOBY DICK') # moby dick
     test_book('https://www.gutenberg.org/files/345/345-0.txt', 'DRACULA') # dracula
     test_book('https://www.gutenberg.org/files/4300/4300-0.txt', 'ULYSSES') # ulysses 
-
 
     print('ALL BOOKS CORRECTLY SORTED')
 
