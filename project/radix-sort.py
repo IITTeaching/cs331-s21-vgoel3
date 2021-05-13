@@ -1,3 +1,5 @@
+import time
+from unittest import TestCase   
 import urllib.request
 
 def book_to_words(book_url='https://www.gutenberg.org/files/84/84-0.txt'):
@@ -22,38 +24,35 @@ def radix_a_book(book_url='https://www.gutenberg.org/files/84/84-0.txt'):
     
     # finding highest length of word in byte_lst to determine how far the sort must iterate
     # to ensure a complete sort
+    
+
     max_len = 0
     for i in byte_lst:
         if max_len < len(i):
             max_len = len(i)
-    
-    # max-idx is a negative value. I will iterate strings from back to front using negative 
-    # indexes starting from -1 in a process analogous to traversing over ints from their 
-    # units place to their thousands place (LSD)
-    max_len *= -1
 
-    # LSD ITERATION - RADIX SORT LOOP
-    for i in range(-1, max_len -1, -1):
-        byte_lst = count_sort(byte_lst, i)
+    # LSD ITERATION - RADIX SORT LOOP - INDEX ADJUSTMENTS PERFORMED FOR EACH BYTE-STRING WITHIN COUNT_SORT()
+    for i in range(max_len):
+        byte_lst = count_sort(byte_lst, i, max_len - 1)
     return byte_lst
 
-def count_sort(arr, idx):
+def count_sort(arr, curr_i, max_idx):
     # The output character array that will have sorted arr
     output = [0 for i in range(len(arr))]
  
     # Create a count array to store count of inidividul
     # characters and initialize count array as 0
     count = [0 for i in range(128)]
- 
-    # For storing the resulting answer since the
-    # string is immutable
-    ans = ["" for _ in arr]
- 
+  
     # Store count of each character
-    # i is a word in arr, which is a list of byte-string words
+    # i is a word in arr, and arr is a list of byte-strings
     for i in arr:
-        if -idx <= len(i):
-            count[i[idx]] += 1
+
+        # max_len - curr_i is how to 'pad' the strings at the back so that alphabetical order takes precedence
+        # over length of strings. Originally, length took precedence over alphabetical order in my algorithm, 
+        # which wasn't correct as a result of padding at the front of the strings.
+        if max_idx - curr_i < len(i):
+            count[i[max_idx - curr_i]] += 1
         else:
             count[0] += 1
 
@@ -64,37 +63,52 @@ def count_sort(arr, idx):
  
     # Build the output character array
     for i in range(len(arr) -1, -1, -1):
-        if -idx <= len(arr[i]):
-            output[count[arr[i][idx]] - 1] = arr[i]
-            count[arr[i][idx]] -= 1            
+        if max_idx - curr_i < len(arr[i]):
+            output[count[arr[i][max_idx - curr_i]] - 1] = arr[i]
+            count[arr[i][max_idx - curr_i]] -= 1            
         else:
             output[count[0] - 1] = arr[i]
             count[0] -= 1            
     
-    # Copy the output array to arr, so that arr now
-    # contains sorted characters
+    return output
 
-    for i in range(len(arr)):
-        ans[i] = output[i]
-    return ans
+def test_book(link='https://www.gutenberg.org/files/84/84-0.txt', title = 'FRANKENSTEIN'):
+    tc = TestCase()
+    print(80 * '#', 'BEGIN SORTING *{}*'.format(title), 80 * '#', sep='\n')
+    print()
+    copy_lst = book_to_words(link)
 
-def test_book(link='https://www.gutenberg.org/files/84/84-0.txt'):
+    ### lines of code which could be used to help compare the runtimes of PythonSort and RadixSort (noted with <<<<)
+    # py_start = time.time() <<<<
+    copy_lst = sorted(copy_lst)
+    # py_end = time.time()   <<<<
+    
+    ### RadixSort runtime <<<<
+    # start = time.time() <<<<
     r_sort_lst = radix_a_book(link)
-    print(r_sort_lst[:20], r_sort_lst[1000:1020], r_sort_lst[10000:10020], r_sort_lst[70000:70020], r_sort_lst[-20:], sep='\n')    
+    # end = time.time() <<<<
+
+    ### random sampling of the sorted list - enables rough visual checking of a correct sort
+    # print(r_sort_lst[:20], r_sort_lst[1000:1020], r_sort_lst[10000:10020], r_sort_lst[70000:70020], r_sort_lst[-20:], sep='\n\n')    
+    
+    # success report and statistics
+    tc.assertEqual(r_sort_lst, copy_lst)
+    # print('RadixSort runtime: {} seconds.'.format(end - start))
+    # print('PythonSort runtime: {} seconds.'.format(py_end - py_start))
+    print(80 * '#', 'END SORTING *{}*: CORRECTLY SORTED'.format(title), 80 * '#', '\n\n', sep='\n')
 
 def main():
     
     test_book() # frankenstein
-    test_book('https://www.gutenberg.org/files/2701/2701-0.txt') # moby dick
-    test_book('https://www.gutenberg.org/files/4300/4300-0.txt') # ulysses (last words are pretty funny)
-    test_book('https://www.gutenberg.org/files/345/345-0.txt') # dracula
+    test_book('https://www.gutenberg.org/files/2701/2701-0.txt', 'MOBY DICK') # moby dick
+    test_book('https://www.gutenberg.org/files/345/345-0.txt', 'DRACULA') # dracula
+    test_book('https://www.gutenberg.org/files/4300/4300-0.txt', 'ULYSSES') # ulysses 
 
-    ## \/\/\/ SMALL TEST CASE OF RADIX-SORT VIA LOOPING OF COUNT_SORT() \/\/\/
-    
-    test_list_1 = [b'Act', b'Bear', b'Cat', b'125', b'Dog', b'it', b'the']
-    for i in range(-1, -len('bear') -1, -1):
-        test_list_1 = count_sort(test_list_1, i)
-        print(test_list_1) 
+    ### \/\/\/ SMALL TEST CASE OF RADIX-SORT VIA LOOPING OF COUNT_SORT() \/\/\/
+    # test_list_1 = [b'Act', b'Bear', b'Cat', b'125', b'Dog', b'it', b'the']
+    # for i in range(0, len('bear')):
+    #     test_list_1 = count_sort(test_list_1, i, len('bear') - 1)
+    #     print(test_list_1) 
 
 
 main()
