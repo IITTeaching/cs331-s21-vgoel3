@@ -1,50 +1,62 @@
 from unittest import TestCase
 import random
+import statistics
 
 def quicksort(lst,pivot_fn):
     qsort(lst,0,len(lst) - 1,pivot_fn)
 
 def qsort(lst,low,high,pivot_fn):
     ### BEGIN SOLUTION
-    if high - low < 1:
-        return lst
-    else:
-        piv_index = pivot_fn(lst, low, high)
-        lst[low], lst[piv_index] = lst[piv_index], lst[low]
-        smaller = low + 1
-        larger = high
-        while smaller <= larger:
-            print(smaller, larger, low, high, sep=', ')
-            print(lst)
-            while lst[smaller] < lst[low]:
-                print(smaller, larger, low, high, sep=', ')
-                smaller += 1
-            print(smaller, larger, low, high, sep=', ')
-            while lst[larger] > lst[low]:
-                larger -= 1
-            print(smaller, larger, low, high, sep=', ')
-            if smaller < larger:
-                lst[smaller], lst[larger] = lst[larger], lst[smaller]
-                larger -= 1
-                smaller += 1
-        qsort(lst, low, smaller - 1, pivot_fn)
-        qsort(lst, smaller + 1, high, pivot_fn)
-        return lst
+    if high <= low:
+        return
+    i = low
+    j = high - 1
+    pivot, pivot_idx = pivot_fn(lst, low, high)
+    lst[high], lst[pivot_idx] = lst[pivot_idx], lst[high]
+    pivot_idx = high
+    while j > i:
+        if lst[i] > pivot and lst[j] < pivot:
+            if pivot_idx != -1:
+                lst[i], lst[j], lst[pivot_idx] = lst[j], lst[pivot_idx], lst[i]
+                pivot_idx = j
+            else:
+                lst[i], lst[j] = lst[j], lst[i]
+        else:
+            if lst[i] <= pivot:
+                i += 1
+            if lst[j] >= pivot:
+                j -= 1
+    if j+1 != high and lst[j+1] > pivot and lst[j] < pivot:
+        j += 1
+    if lst[j] > lst[pivot_idx]:
+        lst[j], lst[pivot_idx] = lst[pivot_idx], lst[j]
+        pivot_idx = j
+    qsort(lst, low, pivot_idx-1, pivot_fn)
+    qsort(lst, pivot_idx+1, high, pivot_fn)
     ### END SOLUTION
 
 def pivot_first(lst,low,high):
     ### BEGIN SOLUTION
-    return low
+    return lst[low], low
     ### END SOLUTION
 
 def pivot_random(lst,low,high):
     ### BEGIN SOLUTION
-    return random.randint(low, high)
+    idx = random.randint(low, high)
+    return lst[idx], idx
     ### END SOLUTION
 
 def pivot_median_of_three(lst,low,high):
     ### BEGIN SOLUTION
-    pass
+    med = statistics.median([lst[low], lst[high], lst[(high+low)//2]])
+    idx = -1
+    if med == lst[low]:
+        idx = low
+    elif med == lst[high]:
+        idx = high
+    else:
+        idx = (high+low)//2 
+    return med, idx
     ### END SOLUTION
 
 ################################################################################
